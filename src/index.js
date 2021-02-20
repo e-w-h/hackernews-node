@@ -1,6 +1,6 @@
-const { ApolloServer } = require('apollo-server')
-const fs = require(fs)
-const path = require(path)
+const { ApolloServer, AddArgumentsAsVariables } = require('apollo-server')
+const fs = require('fs')
+const path = require('path')
 
 let links = [{
     id: 'link-0',
@@ -9,16 +9,23 @@ let links = [{
 }]
 
 // Implementation of the GraphQL schema
+let idCount = links.length
 const resolvers = {
     Query: {
         info: () => `This is the API of a Hackernews Clone`,
         feed: () => links,
     },
-    Link: {
-        id: (parent) => parent.id,
-        description: (parent) => parent.description,
-        url: (parent) => parent.url,
-    }
+    Mutation: {
+        post: (parent, args) => {
+            const link = {
+                id: `link-${idCount++}`,
+                description: args.description,
+                url: args.url,
+            }
+            links.push(link)
+            return link
+        }
+    },
 }
 
 // Pass schema and resolvers to an ApolloServer
