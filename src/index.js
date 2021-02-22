@@ -29,22 +29,25 @@ const resolvers = {
             })
             return newLink
         },
-        updateLink: (_, args) => {
-            let updatedLink
-            links = links.map(link => {
-                if (link.id === args.id) {
-                    updatedLink = { ...link, ...args }
-                    return updatedLink
+        updateLink: (parent, args, context, info) => {
+            const updatedLink = context.prisma.link.update({
+                where: {
+                    id: args.id,
+                },
+                data: {
+                    url: args.url,
+                    description: args.description,
                 }
-                return link
             })
             return updatedLink
         },
-        deleteLink: (_, {id}) => {
-            const removeIndex = links.findIndex(link => link.id === id)
-            const removedLink = links[removeIndex]
-            links.splice(removeIndex, 1)
-            return removedLink
+        deleteLink: (parent, args, context, info) => {
+            const deletedLink = context.prisma.link.delete({
+                where: {
+                    id: args.id,
+                },
+            })
+            return deletedLink
         }
     },
 }
