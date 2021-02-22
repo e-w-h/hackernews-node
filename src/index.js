@@ -3,32 +3,31 @@ const fs = require('fs')
 const path = require('path')
 const { PrismaClient } = require('@prisma/client')
 
-let links = [{
-    id: 'link-0',
-    url: 'www.howtographql.com',
-    description: 'Fullstack tutorial for GraphQL'
-}]
-
 // Implementation of the GraphQL schema
-let idCount = links.length
 const resolvers = {
     Query: {
         info: () => `This is the API of a Hackernews Clone`,
-        feed: () => links,
-        link: (_, {id}) => {
-            const link = links.find(link => link.id === id)
+        feed: () => async (parent, args, context) => {
+            return context.prisma.link.findMany()
+        },
+        link: () => async (parent, args, context) => {
+            const link = context.prisma.link.findUnique({
+                where: {
+                    id: args.id,
+                }
+            })
             return link
         } 
     },
     Mutation: {
-        post: (parent, args) => {
-            const link = {
-                id: `link-${idCount++}`,
-                description: args.description,
-                url: args.url,
-            }
-            links.push(link)
-            return link
+        post: (parent, args, context, info) => {
+            const newLink = context.prisma.link.create({
+                data: {
+                    url: args.url,
+                    description: args.description,
+                },
+            })
+            return newLink
         },
         updateLink: (_, args) => {
             let updatedLink
