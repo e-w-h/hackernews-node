@@ -1,6 +1,7 @@
 const { ApolloServer, AddArgumentsAsVariables } = require('apollo-server')
 const fs = require('fs')
 const path = require('path')
+const { PrismaClient } = require('@prisma/client')
 
 let links = [{
     id: 'link-0',
@@ -50,12 +51,17 @@ const resolvers = {
 }
 
 // Pass schema and resolvers to an ApolloServer
+const prisma = new PrismaClient()
+
 const server = new ApolloServer({
     typeDefs: fs.readFileSync(
         path.join(__dirname, 'schema.graphql'),
         'utf8'
     ),
     resolvers,
+    context: {
+        prisma,
+    }
 })
 
 server
