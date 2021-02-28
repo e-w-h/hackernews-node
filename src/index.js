@@ -8,9 +8,11 @@ const resolvers = {
     Query: {
         info: () => `This is the API of a Hackernews Clone`,
         feed: async (parent, args, context) => {
+            // Access the PrismaClient instance through 'context' argument
             return context.prisma.link.findMany()
         },
         link: async (parent, args, context) => {
+            // Access the PrismaClient instance through 'context' argument
             const link = context.prisma.link.findUnique({
                 where: {
                     id: args.id,
