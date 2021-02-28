@@ -55,6 +55,7 @@ const resolvers = {
 // Pass schema and resolvers to an ApolloServer
 const prisma = new PrismaClient()
 
+// Initialize GraphQL server
 const server = new ApolloServer({
     typeDefs: fs.readFileSync(
         path.join(__dirname, 'schema.graphql'),
@@ -62,7 +63,7 @@ const server = new ApolloServer({
     ),
     resolvers,
     context: {
-        prisma,
+        prisma,  // Attach instance of PrismaClient to the context 
     }
 })
 
