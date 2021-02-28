@@ -7,10 +7,10 @@ const { PrismaClient } = require('@prisma/client')
 const resolvers = {
     Query: {
         info: () => `This is the API of a Hackernews Clone`,
-        feed: () => async (parent, args, context) => {
+        feed: async (parent, args, context) => {
             return context.prisma.link.findMany()
         },
-        link: () => async (parent, args, context) => {
+        link: async (parent, args, context) => {
             const link = context.prisma.link.findUnique({
                 where: {
                     id: args.id,
