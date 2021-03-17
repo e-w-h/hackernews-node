@@ -2,6 +2,7 @@ const { ApolloServer, AddArgumentsAsVariables } = require('apollo-server')
 const fs = require('fs')
 const path = require('path')
 const { PrismaClient } = require('@prisma/client')
+const { getUserId } = require('./utils')
 
 // Implementation of the GraphQL schema
 const resolvers = {
@@ -64,8 +65,15 @@ const server = new ApolloServer({
         'utf8'
     ),
     resolvers,
-    context: {
-        prisma,  // Attach instance of PrismaClient to the context 
+    // Create the context as a function which returns the context
+    context: ({ req }) => {
+        return {
+          ...req,  // Attach HTTP request that carries the incoming query/mutation
+          prisma,  // Attach instance of PrismaClient to the context 
+          userId:
+            // Read Authorization header and validate if possible
+            req && req.headers.authorization ? getUserId(req) : null
+        }
     }
 })
 
