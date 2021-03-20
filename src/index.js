@@ -3,56 +3,17 @@ const fs = require('fs')
 const path = require('path')
 const { PrismaClient } = require('@prisma/client')
 const { getUserId } = require('./utils')
+const Query = require('./resolvers/Query')
+const Mutation = require('./resolvers/Mutation')
+const User = require('./resolvers/User')
+const Link = require('./resolvers/Link')
 
 // Implementation of the GraphQL schema
 const resolvers = {
-    Query: {
-        info: () => `This is the API of a Hackernews Clone`,
-        feed: async (parent, args, context) => {
-            // Access the PrismaClient instance through 'context' argument
-            return context.prisma.link.findMany()
-        },
-        link: async (parent, args, context) => {
-            // Access the PrismaClient instance through 'context' argument
-            const link = context.prisma.link.findUnique({
-                where: {
-                    id: args.id,
-                }
-            })
-            return link
-        } 
-    },
-    Mutation: {
-        post: (parent, args, context, info) => {
-            const newLink = context.prisma.link.create({
-                data: {
-                    url: args.url,
-                    description: args.description,
-                },
-            })
-            return newLink
-        },
-        updateLink: (parent, args, context, info) => {
-            const updatedLink = context.prisma.link.update({
-                where: {
-                    id: args.id,
-                },
-                data: {
-                    url: args.url,
-                    description: args.description,
-                }
-            })
-            return updatedLink
-        },
-        deleteLink: (parent, args, context, info) => {
-            const deletedLink = context.prisma.link.delete({
-                where: {
-                    id: args.id,
-                },
-            })
-            return deletedLink
-        }
-    },
+    Query,
+    Mutation,
+    User,
+    Link
 }
 
 // Pass schema and resolvers to an ApolloServer
