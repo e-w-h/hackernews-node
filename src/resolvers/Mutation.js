@@ -22,11 +22,12 @@ async function post(parent, args, context, info) {
   // Get user ID from JWT set at Authorization header
   const { userId } = context
   // Connect user to link using the user ID
-  return await context.prisma.link.create({
+  const newLink = await context.prisma.link.create({
     data: {
       url: args.url,
       description: args.description,
       postedBy: { connect: { id: userId } },
     }
   })
+  context.pubsub.publish("NEW_LINK", newLink)
 }
