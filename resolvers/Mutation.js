@@ -17,3 +17,16 @@ async function signup(parent, args, context, info) {
     user,
   }
 }
+
+async function post(parent, args, context, info) {
+  // Get user ID from JWT set at Authorization header
+  const { userId } = context
+  // Connect user to link using the user ID
+  return await context.prisma.link.create({
+    data: {
+      url: args.url,
+      description: args.description,
+      postedBy: { connect: { id: userId } },
+    }
+  })
+}
