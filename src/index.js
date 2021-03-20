@@ -7,6 +7,9 @@ const Query = require('./resolvers/Query')
 const Mutation = require('./resolvers/Mutation')
 const User = require('./resolvers/User')
 const Link = require('./resolvers/Link')
+const { PubSub } = require('apollo-server')
+
+const pubsub = new PubSub()
 
 // Implementation of the GraphQL schema
 const resolvers = {
@@ -31,6 +34,7 @@ const server = new ApolloServer({
         return {
           ...req,  // Attach HTTP request that carries the incoming query/mutation
           prisma,  // Attach instance of PrismaClient to the context 
+          pubsub,
           userId:
             // Read Authorization header and validate if possible
             req && req.headers.authorization ? getUserId(req) : null
