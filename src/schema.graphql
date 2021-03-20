@@ -1,3 +1,7 @@
+type Subscription {
+    newLink: Link
+}
+
 type AuthPayload {
     token: String
     user: User
